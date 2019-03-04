@@ -32,11 +32,13 @@ public class NegotiationStateMachineService {
     @Autowired
     private StateMachineFactory<NegotiationStatus, NegotiationEvents> stateMachineFactory;
 
-    public void execute(Long businessId, NegotiationEvents event) {
+    public boolean execute(Long businessId, NegotiationEvents event) {
         //获取当前线程的stateMachine
         StateMachine<NegotiationStatus, NegotiationEvents> stateMachine = this.getStateMachine();
         //开启状态机器
         stateMachine.start();
+        //设置返回值
+        boolean result = false;
         try {
             // 在BizStateMachinePersist的restore过程中，绑定turnstileStateMachine状态机相关事件监听
             stateMachinePersist.restore(stateMachine, businessId);
@@ -50,7 +52,12 @@ public class NegotiationStateMachineService {
             // 发送事件，返回是否执行成功
             boolean success = stateMachine.sendEvent(message);
             if (success) {
-                stateMachinePersist.persist(stateMachine, businessId);
+                try{
+                    stateMachinePersist.persist(stateMachine, businessId);
+                    result = true;
+                }catch (RuntimeException r){
+                    System.out.println(r.toString());
+                }
             } else {
                 System.out.println("状态机处理未执行成功，请处理，ID：" + businessId);
             }
@@ -58,6 +65,7 @@ public class NegotiationStateMachineService {
             e.printStackTrace();
         } finally {
             stateMachine.stop();
+            return result;
         }
     }
 

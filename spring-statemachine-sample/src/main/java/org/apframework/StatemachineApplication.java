@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,17 +31,29 @@ public class StatemachineApplication implements CommandLineRunner {
     }
 
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public void run(String... strings) throws Exception {
 
-        Map<String, Object> context = new HashMap<>(16);
-        context.put("context", "some code");
+//        Map<String, Object> context = new HashMap<>(16);
+//        context.put("context", "some code");
 //        statemachineService.execute(1, TurnstileEvents.PUSH, context);
 //        statemachineService.execute(1, TurnstileEvents.PUSH, context);
 //        statemachineService.execute(1, TurnstileEvents.COIN, context);
 //        statemachineService.execute(1, TurnstileEvents.COIN, context);
 
-        negotiationStateMachineService.execute(1L, NegotiationEvents.EXPIRE);
 //        negotiationStateMachineService.execute(1L, NegotiationEvents.CARRIER_FORBID);
+
+        for (int i=0;i<10;i++){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean execute = negotiationStateMachineService.execute(1L, NegotiationEvents.EXPIRE);
+                    if(!execute){
+                        throw new RuntimeException("出错了");
+                    }
+                }
+            }).run();
+        }
     }
 
 }
