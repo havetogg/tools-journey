@@ -18,7 +18,9 @@ import org.springframework.statemachine.guard.Guard;
 import org.springframework.statemachine.persist.DefaultStateMachinePersister;
 import org.springframework.statemachine.persist.StateMachinePersister;
 
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 
 import static org.apframework.fsm.NegotiationStatus.*;
@@ -85,8 +87,10 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<Negoti
             if(action == null || guard== null){
                 return;
             }
-            transitions = transitions.withExternal().source(e.getFrom()).target(e.getTo()).event(e.getEvent()).
-                    action(action).guard(guard).and();
+            for (NegotiationStatus negotiationStatus : e.getFrom()) {
+                transitions = transitions.withExternal().source(negotiationStatus).target(e.getTo()).event(e.getEvent()).
+                        action(action).guard(guard).and();
+            }
         }
     }
 
@@ -98,13 +102,13 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<Negoti
      * @return
      * @throws RuntimeException
      */
-    private Action<NegotiationStatus, NegotiationEvents> getActionByStatus(NegotiationStatus from, NegotiationStatus to)
+    private Action<NegotiationStatus, NegotiationEvents> getActionByStatus(List<NegotiationStatus> from, NegotiationStatus to)
             throws RuntimeException {
         Map<String, Object> beansWithAnnotation = SpringUtil.getBeansWithAnnotation(NegotiationAction.class);
         Object o = null;
         for(Map.Entry<String, Object> entry: beansWithAnnotation.entrySet()){
             NegotiationAction annotation = AnnotationUtil.getAnnotation(entry.getValue(), NegotiationAction.class);
-            if(annotation.from() == from && annotation.to() == to){
+            if(from.containsAll(Arrays.asList(annotation.from())) && annotation.to() == to){
                 o = entry.getValue();
             }
         }
@@ -121,12 +125,12 @@ public class StateMachineConfig extends EnumStateMachineConfigurerAdapter<Negoti
      * @param to
      * @return
      */
-    private Guard<NegotiationStatus, NegotiationEvents> getGuardByStatus(NegotiationStatus from, NegotiationStatus to) {
+    private Guard<NegotiationStatus, NegotiationEvents> getGuardByStatus(List<NegotiationStatus> from, NegotiationStatus to) {
         Map<String, Object> beansWithAnnotation = SpringUtil.getBeansWithAnnotation(NegotiationGuard.class);
         Object o = null;
         for(Map.Entry<String, Object> entry: beansWithAnnotation.entrySet()){
             NegotiationGuard annotation = AnnotationUtil.getAnnotation(entry.getValue(), NegotiationGuard.class);
-            if(annotation.from() == from && annotation.to() == to){
+            if(from.containsAll(Arrays.asList(annotation.from())) && annotation.to() == to){
                 o = entry.getValue();
             }
         }

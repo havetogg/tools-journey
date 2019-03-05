@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NegotiationAction {
-    NegotiationStatus from() default NegotiationStatus.S1;
+    NegotiationStatus[] from() default {NegotiationStatus.S1};
     NegotiationStatus to();
 }

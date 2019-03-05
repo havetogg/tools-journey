@@ -1,4 +1,7 @@
-package org.apframework.fsm;
+package org.apframework.test2;
+
+import org.apframework.test2.event.NegotiationEvents;
+import org.apframework.test2.status.NegotiationStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,9 +14,12 @@ import java.util.List;
  */
 public enum EventCorrelation {
 
-    EXPIRE(Arrays.asList(NegotiationStatus.S1), NegotiationEvents.EXPIRE, NegotiationStatus.S2);
+    EXPIRE(Arrays.asList(NegotiationStatus.NEGOTIATING), NegotiationEvents.EXPIRE, NegotiationStatus.NEGOTIATION_TIMEOUT),
     //CARRIER_FORBID(NegotiationStatus.S1, NegotiationEvents.CARRIER_FORBID, NegotiationStatus.S5);
+    DEPOSIT_PAID(Arrays.asList(NegotiationStatus.NEGOTIATION_SUCCESS), NegotiationEvents.DEPOSIT_PAID, NegotiationStatus.ORDER_GENERATED),
+    CLOSE_FOR_OTHERS_DEPOSIT_PAID(Arrays.asList(NegotiationStatus.NEGOTIATION_SUCCESS), NegotiationEvents.CLOSE_FOR_OTHERS_DEPOSIT_PAID, NegotiationStatus.NEGOTIATION_CLOSE),
 
+    ;
 
     private List<NegotiationStatus> from;
 
@@ -47,5 +53,5 @@ public enum EventCorrelation {
     public NegotiationStatus getTo() {
         return to;
     }
-}
 
+}

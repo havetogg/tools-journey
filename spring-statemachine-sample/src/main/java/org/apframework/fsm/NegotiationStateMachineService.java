@@ -13,6 +13,7 @@ import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.statemachine.support.StateMachineInterceptor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -101,7 +102,7 @@ public class NegotiationStateMachineService {
         Object o = null;
         for(Map.Entry<String, Object> entry: beansWithAnnotation.entrySet()){
             NegotiationInterceptor annotation = AnnotationUtil.getAnnotation(entry.getValue(), NegotiationInterceptor.class);
-            if(annotation.from() == eventCorrelation.getFrom() && annotation.to() == eventCorrelation.getTo()){
+            if(eventCorrelation.getFrom().containsAll(Arrays.asList(annotation.from())) && annotation.to() == eventCorrelation.getTo()){
                 o = entry.getValue();
             }
         }
