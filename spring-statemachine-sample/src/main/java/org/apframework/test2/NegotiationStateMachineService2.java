@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class NegotiationStateMachineServgit ice2 {
+public class NegotiationStateMachineService2 {
 
 
     @Transactional(rollbackFor = Exception.class)
