@@ -8,6 +8,7 @@ import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,7 +21,8 @@ public class StatemachineService {
 
     @Autowired
     private StateMachinePersister<TurnstileStates, TurnstileEvents, Integer> stateMachinePersist;
-    @Autowired
+
+    @Resource
     private StateMachineFactory<TurnstileStates, TurnstileEvents> stateMachineFactory;
 
     public void execute(Integer businessId, TurnstileEvents event, Map<String, Object> context) {
