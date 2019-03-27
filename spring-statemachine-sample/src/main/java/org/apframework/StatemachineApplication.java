@@ -23,8 +23,8 @@ public class StatemachineApplication implements CommandLineRunner {
     @Autowired
     private StatemachineService statemachineService;
 
-    @Autowired
-    private NegotiationStateMachineService negotiationStateMachineService;
+    /*@Autowired
+    private NegotiationStateMachineService negotiationStateMachineService;*/
 
     public static void main(String[] args) {
         SpringApplication.run(StatemachineApplication.class, args);
@@ -34,16 +34,16 @@ public class StatemachineApplication implements CommandLineRunner {
     @Transactional(rollbackFor = RuntimeException.class)
     public void run(String... strings) throws Exception {
 
-//        Map<String, Object> context = new HashMap<>(16);
-//        context.put("context", "some code");
-//        statemachineService.execute(1, TurnstileEvents.PUSH, context);
-//        statemachineService.execute(1, TurnstileEvents.PUSH, context);
-//        statemachineService.execute(1, TurnstileEvents.COIN, context);
-//        statemachineService.execute(1, TurnstileEvents.COIN, context);
+        Map<String, Object> context = new HashMap<>(16);
+        context.put("context", "some code");
+        statemachineService.execute(1, TurnstileEvents.PUSH, context);
+        statemachineService.execute(1, TurnstileEvents.PUSH, context);
+        statemachineService.execute(1, TurnstileEvents.COIN, context);
+        statemachineService.execute(1, TurnstileEvents.COIN, context);
 
-//        negotiationStateMachineService.execute(1L, NegotiationEvents.CARRIER_FORBID);
+        //statemachineService.execute(1L, NegotiationEvents.CARRIER_FORBID);
 
-        for (int i=0;i<10;i++){
+        /*for (int i=0;i<10;i++){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -53,7 +53,7 @@ public class StatemachineApplication implements CommandLineRunner {
                     }
                 }
             }).run();
-        }
+        }*/
     }
 
 }
