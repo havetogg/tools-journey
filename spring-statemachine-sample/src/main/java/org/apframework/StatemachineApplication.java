@@ -32,9 +32,9 @@ public class StatemachineApplication implements CommandLineRunner {
         Map<String, Object> context = new HashMap<>(16);
         context.put("context", "some code");
         statemachineService.execute(1, TurnstileEvents.PUSH, context);
-        statemachineService.execute(1, TurnstileEvents.PUSH, context);
-        statemachineService.execute(1, TurnstileEvents.COIN, context);
-        statemachineService.execute(1, TurnstileEvents.COIN, context);
+//        statemachineService.execute(1, TurnstileEvents.PUSH, context);
+//        statemachineService.execute(1, TurnstileEvents.COIN, context);
+//        statemachineService.execute(1, TurnstileEvents.COIN, context);
     }
 
 }
